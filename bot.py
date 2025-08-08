@@ -60,7 +60,8 @@ down below is on_ready + bot.run
 async def on_ready():
     global welcomeChannel
     welcomeChannel = bot.get_channel(1402518002552803378)
+    log_channel = bot.get_channel(1402518002552803378)
     if welcomeChannel is None:
-        await log_to_channel("Could not find the welcome channel.")
+        await log_channel.send("Could not find the welcome channel.")
     else:
-        await log_to_channel(f'Logged in as {bot.user.name}. Now commencing all startup processes.')
+        await log_channel.send(f'Logged in as {bot.user.name}. Now commencing all startup processes.')
