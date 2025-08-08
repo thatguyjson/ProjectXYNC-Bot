@@ -1,0 +1,7 @@
+minecraftEmoji = '<:minecraft:1403233403507314839>'
+valorantEmoji = '<:valorant:1403233435362918472>'
+tftEmoji = '<:tft:1403233498621546516>'
+lolEmoji = '<:lol:1403233497086296115>'
+csgoEmoji = '<:csgo:1403233437938352209>'
+fortniteEmoji = '<:fortnite:1403233494276247572>'
+marvelrivalsEmoji = '<:marvelrivals:1403252856437342330>'
