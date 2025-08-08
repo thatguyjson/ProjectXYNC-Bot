@@ -59,9 +59,68 @@ down below is on_ready + bot.run
 @bot.event
 async def on_ready():
     global welcomeChannel
+    global log_channel
     welcomeChannel = bot.get_channel(1402518002552803378)
     log_channel = bot.get_channel(1402518002552803378)
     if welcomeChannel is None:
         await log_channel.send("Could not find the welcome channel.")
     else:
         await log_channel.send(f'Logged in as {bot.user.name}. Now commencing all startup processes.')
+
+'''
+
+SEPARATING EVERYHITNG THTT RUNS AFTER BOT TURNS ON
+
+'''
+emoji_role_map = {
+    fortniteEmoji: 1402512807701774428,  # Fortnite Role ID
+    tftEmoji: 1403233017568432269,       # TFT Role ID
+    lolEmoji: 1402512736629428254,       # LoL Role ID
+    csgoEmoji: 1402512792011014165,      # CSGO Role ID
+    valorantEmoji: 1402512751162822706,  # Valorant Role ID
+    marvelrivalsEmoji: 1403255089556226099,  # Marvel Rivals Role ID
+    minecraftEmoji: 1402512775745507409,  # Minecraft Role ID
+}
+target_message_id = 1403254982433574964
+
+@bot.event
+async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent):
+    if payload.message_id != target_message_id:
+        return
+
+    emoji_str = str(payload.emoji)
+    role_id = emoji_role_map.get(emoji_str)
+
+    if role_id:
+        guild = bot.get_guild(payload.guild_id)
+        if guild is None:
+            return
+
+        role = guild.get_role(role_id)
+        member = await guild.fetch_member(payload.user_id)
+
+        if role and member:
+            await member.add_roles(role, reason="Reaction role added")
+            log_channel.send(f"Gave {role.name} to {member.name}")
+
+@bot.event
+async def on_raw_reaction_remove(payload: nextcord.RawReactionActionEvent):
+    if payload.message_id != target_message_id:
+        return
+
+    emoji_str = str(payload.emoji)
+    role_id = emoji_role_map.get(emoji_str)
+
+    if role_id:
+        guild = bot.get_guild(payload.guild_id)
+        if guild is None:
+            return
+
+        role = guild.get_role(role_id)
+        member = await guild.fetch_member(payload.user_id)
+
+        if role and member:
+            await member.remove_roles(role, reason="Reaction role removed")
+            log_channel.send(f"Removed {role.name} from {member.name}")
+
+bot.run(botToken)
