@@ -43,6 +43,7 @@ bot = commands.Bot(command_prefix='?', intents=intents)
 
 # This might be used somewhere maybe...
 msg_ids = {}
+log_channel = bot.get_channel(1402518002552803378)
 
 # DB Connection below grabs all DB info related stuff in order to connect from Constants(Available in PebbleHost)
 db = mysql.connector.connect(
@@ -59,9 +60,7 @@ down below is on_ready + bot.run
 @bot.event
 async def on_ready():
     global welcomeChannel
-    global log_channel
     welcomeChannel = bot.get_channel(1402518002552803378)
-    log_channel = bot.get_channel(1402518002552803378)
     if welcomeChannel is None:
         await log_channel.send("Could not find the welcome channel.")
     else:
@@ -80,8 +79,16 @@ emoji_role_map = {
     valorantEmoji: 1402512751162822706,  # Valorant Role ID
     marvelrivalsEmoji: 1403255089556226099,  # Marvel Rivals Role ID
     minecraftEmoji: 1402512775745507409,  # Minecraft Role ID
+    maleEmoji: 1402513160149139456,  
+    femaleEmoji: 1402513175835967528,
+    othergenderEmoji: 1402513187827613758,
+    hehimEmoji: 1402513079266443334,
+    sheherEmoji: 1402513119401742440,
+    theythemEmoji: 1402513137940566126,
 }
-target_message_id = 1403254982433574964
+gameMessage = 1403610341912612914 # all in #reaction-roles
+genderMessage = 1403610368374472767 # all in #reaction-roles
+pronounsMessage = 1403610395096252467 # all in #reaction-roles
 
 @bot.event
 async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent):
