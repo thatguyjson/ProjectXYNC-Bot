@@ -85,6 +85,7 @@ emoji_role_map = {
     hehimEmoji: 1402513079266443334,
     sheherEmoji: 1402513119401742440,
     theythemEmoji: 1402513137940566126,
+    simsEmoji: 1403820574853173258,
 }
 gameMessage = 1403614984122142791
 genderMessage = 1403615112769699921
