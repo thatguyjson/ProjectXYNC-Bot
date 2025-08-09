@@ -72,62 +72,57 @@ SEPARATING EVERYHITNG THTT RUNS AFTER BOT TURNS ON
 
 '''
 emoji_role_map = {
-    fortniteEmoji: 1402512807701774428,  # Fortnite Role ID
-    tftEmoji: 1403233017568432269,       # TFT Role ID
-    lolEmoji: 1402512736629428254,       # LoL Role ID
-    csgoEmoji: 1402512792011014165,      # CSGO Role ID
-    valorantEmoji: 1402512751162822706,  # Valorant Role ID
-    marvelrivalsEmoji: 1403255089556226099,  # Marvel Rivals Role ID
-    minecraftEmoji: 1402512775745507409,  # Minecraft Role ID
-    maleEmoji: 1402513160149139456,  
+    fortniteEmoji: 1402512807701774428,
+    tftEmoji: 1403233017568432269,
+    lolEmoji: 1402512736629428254,
+    csgoEmoji: 1402512792011014165,
+    valorantEmoji: 1402512751162822706,
+    marvelrivalsEmoji: 1403255089556226099,
+    minecraftEmoji: 1402512775745507409,
+    maleEmoji: 1402513160149139456,
     femaleEmoji: 1402513175835967528,
     othergenderEmoji: 1402513187827613758,
     hehimEmoji: 1402513079266443334,
     sheherEmoji: 1402513119401742440,
     theythemEmoji: 1402513137940566126,
 }
-gameMessage = 1403610341912612914 # all in #reaction-roles
-genderMessage = 1403610368374472767 # all in #reaction-roles
-pronounsMessage = 1403610395096252467 # all in #reaction-roles
+gameMessage = 1403614984122142791
+genderMessage = 1403615112769699921
+pronounsMessage = 1403615268567257099
+reaction_role_messages = {gameMessage, genderMessage, pronounsMessage}
+
 
 @bot.event
-async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent):
-    if payload.message_id != target_message_id:
+async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent):   
+    if payload.message_id not in reaction_role_messages:
         return
-
     emoji_str = str(payload.emoji)
     role_id = emoji_role_map.get(emoji_str)
-
     if role_id:
         guild = bot.get_guild(payload.guild_id)
         if guild is None:
             return
-
         role = guild.get_role(role_id)
         member = await guild.fetch_member(payload.user_id)
-
         if role and member:
             await member.add_roles(role, reason="Reaction role added")
-            log_channel.send(f"Gave {role.name} to {member.name}")
+            await log_channel.send(f"Gave **{role.name}** to **{member.name}**")
 
 @bot.event
-async def on_raw_reaction_remove(payload: nextcord.RawReactionActionEvent):
-    if payload.message_id != target_message_id:
+async def on_raw_reaction_remove(payload: nextcord.RawReactionActionEvent): 
+    if payload.message_id not in reaction_role_messages:
         return
-
     emoji_str = str(payload.emoji)
     role_id = emoji_role_map.get(emoji_str)
-
     if role_id:
         guild = bot.get_guild(payload.guild_id)
         if guild is None:
             return
-
         role = guild.get_role(role_id)
         member = await guild.fetch_member(payload.user_id)
-
         if role and member:
             await member.remove_roles(role, reason="Reaction role removed")
-            log_channel.send(f"Removed {role.name} from {member.name}")
+            await log_channel.send(f"Removed **{role.name}** from **{member.name}**")
+
 
 bot.run(botToken)
