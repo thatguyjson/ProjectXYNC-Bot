@@ -43,7 +43,6 @@ bot = commands.Bot(command_prefix='?', intents=intents)
 
 # This might be used somewhere maybe...
 msg_ids = {}
-log_channel = bot.get_channel(1402518002552803378)
 
 # DB Connection below grabs all DB info related stuff in order to connect from Constants(Available in PebbleHost)
 db = mysql.connector.connect(
@@ -60,6 +59,7 @@ down below is on_ready + bot.run
 @bot.event
 async def on_ready():
     global welcomeChannel
+    log_channel = bot.get_channel(1402518002552803378)
     welcomeChannel = bot.get_channel(1402518002552803378)
     if welcomeChannel is None:
         await log_channel.send("Could not find the welcome channel.")
@@ -93,7 +93,8 @@ reaction_role_messages = {gameMessage, genderMessage, pronounsMessage}
 
 
 @bot.event
-async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent):   
+async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent):
+    log_channel = bot.get_channel(1402518002552803378)
     if payload.message_id not in reaction_role_messages:
         return
     emoji_str = str(payload.emoji)
@@ -110,6 +111,7 @@ async def on_raw_reaction_add(payload: nextcord.RawReactionActionEvent):
 
 @bot.event
 async def on_raw_reaction_remove(payload: nextcord.RawReactionActionEvent): 
+    log_channel = bot.get_channel(1402518002552803378)
     if payload.message_id not in reaction_role_messages:
         return
     emoji_str = str(payload.emoji)
