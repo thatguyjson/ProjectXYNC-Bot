@@ -64,11 +64,11 @@ async def on_ready():
     if welcomeChannel is None:
         await log_channel.send("Could not find the welcome channel.")
     else:
-        await log_channel.send(f'Logged in as {bot.user.name}. Now commencing all startup processes.')
+        await log_channel.send(f'Logged in as {bot.user.name}. I am ready to go <@639904427624628224>!')
 
 '''
 
-SEPARATING EVERYHITNG THTT RUNS AFTER BOT TURNS ON
+SEPARATING EVERYHITNG THAT RUNS AFTER BOT TURNS ON
 
 '''
 emoji_role_map = {
