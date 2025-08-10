@@ -127,5 +127,35 @@ async def on_raw_reaction_remove(payload: nextcord.RawReactionActionEvent):
             await member.remove_roles(role, reason="Reaction role removed")
             await log_channel.send(f"Removed **{role.name}** from **{member.name}**")
 
+@bot.command()
+async def announce(ctx, channel: nextcord.TextChannel = None, mention_type: str = None, *, message: str = None):
+    # Safety net: No arguments provided
+    if channel is None or message is None:
+        usage = (
+            "**Usage:** `!announce #channel [mention_type] message`\n"
+            "**Example 1:** `!announce #general everyone Server maintenance tonight`\n"
+            "**Example 2:** `!announce #updates here New patch just dropped!`\n"
+            "**Example 3:** `!announce #news none Just a regular announcement.`\n\n"
+            "`mention_type` must be one of: `everyone`, `here`, or `none`."
+        )
+        await ctx.send(usage)
+        return
+
+    mention = ""
+    if mention_type:
+        mention_type = mention_type.lower()
+        if mention_type == "everyone":
+            mention = "@everyone"
+        elif mention_type == "here":
+            mention = "@here"
+        elif mention_type != "none":
+            await ctx.send("❌ Invalid mention type. Use `everyone`, `here`, or `none`.")
+            return
+    try:
+        await channel.send(f"{mention} {message}".strip())
+        await ctx.send(f"✅ Announcement sent in {channel.mention}")
+    except Exception as e:
+        await ctx.send(f"❌ Failed to send message: {e}")
+
 
 bot.run(botToken)
