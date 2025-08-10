@@ -209,7 +209,7 @@ async def giveaway(ctx, duration: str = None, *, prize: str = None):
 
             if str(reaction.emoji) == cancelgiveawayEmoji:
                 if user.id == ownerId:
-                    await ctx.send(f"❌ {Prize} Giveaway cancelled by {user.mention}. Now deleting original giveaway message.")
+                    await ctx.send(f"❌ {prize} Giveaway cancelled by {user.mention}. Now deleting original giveaway message.")
                     await giveaway_msg.delete()
                     giveaway_ended = True
                     break
