@@ -188,7 +188,7 @@ async def giveaway(ctx, duration: str = None, *, prize: str = None):
         ),
         color=nextcord.Color.green()
     )
-    embed.set_footer(text=f"Ends {nextcord.utils.format_dt(nextcord.utils.utcnow() + nextcord.utils.parse_duration(duration))}")
+    embed.set_footer(text=f"Ends {nextcord.utils.format_dt(nextcord.utils.utcnow() + timedelta(seconds=total_seconds))}")
     giveaway_msg = await ctx.send(embed=embed)
     await giveaway_msg.add_reaction("🎉")
     emoji_obj = nextcord.utils.get(ctx.guild.emojis, id=1403999126835695687)
