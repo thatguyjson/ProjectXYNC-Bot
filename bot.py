@@ -214,7 +214,7 @@ async def giveaway(ctx, duration: str = None, *, prize: str = None):
                     giveaway_ended = True
                     break
                 else:
-                    await bewareMsg = ctx.send(f"❌ {user.mention}, you are not authorized to cancel this giveaway. Json has been alerted, please dont do this again.")
+                    bewareMsg = ctx.send(f"❌ {user.mention}, you are not authorized to cancel this giveaway. Json has been alerted, please dont do this again.")
                     await log_channel.send(f'<@{ownerId}> FYI, {user.mention} is trying to canceled the giveaway.')
                     time.sleep(3)
                     await bewareMsg.delete()
