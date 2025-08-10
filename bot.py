@@ -189,6 +189,7 @@ async def giveaway(ctx, duration: str = None, *, prize: str = None):
         color=nextcord.Color.green()
     )
     giveaway_msg = await ctx.send(embed=embed)
+    await ctx.delete()
     await giveaway_msg.add_reaction("🎉")
     emoji_obj = nextcord.utils.get(ctx.guild.emojis, id=1403999126835695687)
     if emoji_obj:
