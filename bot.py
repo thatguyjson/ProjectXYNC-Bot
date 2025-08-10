@@ -159,6 +159,7 @@ async def announce(ctx, channel: nextcord.TextChannel = None, mention_type: str 
 
 @bot.command()
 async def giveaway(ctx, duration: str = None, *, prize: str = None):
+    log_channel = bot.get_channel(1402518002552803378)
     if duration is None or prize is None:
         await ctx.send(
             "❌ Usage: `!giveaway <duration> <prize>`\n"
@@ -182,12 +183,12 @@ async def giveaway(ctx, duration: str = None, *, prize: str = None):
         description=(
             f"**Prize:** {prize}\n"
             "React with 🎉 to enter!\n"
-            f"React with {cancelgiveawayEmoji} to cancel the giveaway (authorized user only).\n"
+            f"React with {cancelgiveawayEmoji} to cancel the giveaway (Json Only Feature).\n"
             f"Hosted by: {ctx.author.mention}"
         ),
         color=nextcord.Color.green()
     )
-    embed.set_footer(text=f"Ends in {duration}")
+    embed.set_footer(text=f"Ends {nextcord.utils.format_dt(nextcord.utils.utcnow() + nextcord.utils.parse_duration(duration))}")
     giveaway_msg = await ctx.send(embed=embed)
     await giveaway_msg.add_reaction("🎉")
     emoji_obj = nextcord.utils.get(ctx.guild.emojis, id=1403999126835695687)
@@ -208,11 +209,15 @@ async def giveaway(ctx, duration: str = None, *, prize: str = None):
 
             if str(reaction.emoji) == cancelgiveawayEmoji:
                 if user.id == ownerId:
-                    await ctx.send(f"❌ Giveaway cancelled by {user.mention}.")
+                    await ctx.send(f"❌ {Prize} Giveaway cancelled by {user.mention}. Now deleting original giveaway message.")
+                    await giveaway_msg.delete()
                     giveaway_ended = True
                     break
                 else:
-                    await ctx.send(f"❌ {user.mention}, you are not authorized to cancel this giveaway.")
+                    await bewareMsg = ctx.send(f"❌ {user.mention}, you are not authorized to cancel this giveaway. Json has been alerted, please dont do this again.")
+                    await log_channel.send(f'<@{ownerId}> FYI, {user.mention} is trying to canceled the giveaway.')
+                    time.sleep(3)
+                    await bewareMsg.delete()
     except asyncio.TimeoutError:
         giveaway_ended = True
 
