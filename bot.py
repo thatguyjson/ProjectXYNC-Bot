@@ -236,5 +236,10 @@ async def giveaway(ctx, duration: str = None, *, prize: str = None):
     winner = random.choice(users)
     await ctx.send(f"🎉 Congrats {winner.mention}! You won **{prize}**!")
 
+@bot.command()
+@commands.has_permissions(manage_messages=True)
+async def purge(ctx, amount: int):
+    deleted = await ctx.channel.purge(limit=amount + 1)
+    await ctx.send(f"🧹 Deleted {len(deleted)-1} messages.", delete_after=5)
 
 bot.run(botToken)
