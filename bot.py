@@ -132,10 +132,10 @@ async def announce(ctx, channel: nextcord.TextChannel = None, mention_type: str 
     # Safety net: No arguments provided
     if channel is None or message is None:
         usage = (
-            "**Usage:** `!announce #channel [mention_type] message`\n"
-            "**Example 1:** `!announce #general everyone Server maintenance tonight`\n"
-            "**Example 2:** `!announce #updates here New patch just dropped!`\n"
-            "**Example 3:** `!announce #news none Just a regular announcement.`\n\n"
+            "**Usage:** `?announce #channel [mention_type] message`\n"
+            "**Example 1:** `?announce #general everyone Server maintenance tonight`\n"
+            "**Example 2:** `?announce #updates here New patch just dropped!`\n"
+            "**Example 3:** `?announce #news none Just a regular announcement.`\n\n"
             "`mention_type` must be one of: `everyone`, `here`, or `none`."
         )
         await ctx.send(usage)
