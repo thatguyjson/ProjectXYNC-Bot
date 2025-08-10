@@ -91,6 +91,7 @@ gameMessage = 1403614984122142791
 genderMessage = 1403615112769699921
 pronounsMessage = 1403615268567257099
 reaction_role_messages = {gameMessage, genderMessage, pronounsMessage}
+ownerId = 639904427624628224
 
 
 @bot.event
@@ -140,7 +141,6 @@ async def announce(ctx, channel: nextcord.TextChannel = None, mention_type: str 
         )
         await ctx.send(usage)
         return
-
     mention = ""
     if mention_type:
         mention_type = mention_type.lower()
@@ -156,6 +156,80 @@ async def announce(ctx, channel: nextcord.TextChannel = None, mention_type: str 
         await ctx.send(f"✅ Announcement sent in {channel.mention}")
     except Exception as e:
         await ctx.send(f"❌ Failed to send message: {e}")
+
+@bot.command()
+async def giveaway(ctx, duration: str = None, *, prize: str = None):
+    if duration is None or prize is None:
+        await ctx.send(
+            "❌ Usage: `!giveaway <duration> <prize>`\n"
+            "Examples:\n`!giveaway 1d Nitro Giveaway!`\n`!giveaway 4h Steam Gift Card!`\n`!giveaway 30m Free Role!`"
+        )
+        return
+    unit = duration[-1]
+    if not duration[:-1].isdigit() or unit not in ["d", "h", "m"]:
+        await ctx.send("❌ Invalid format. Use a number followed by `d`, `h`, or `m` (e.g., 1d, 3h, 45m).")
+        return
+    time_value = int(duration[:-1])
+    if unit == "d":
+        total_seconds = time_value * 86400
+    elif unit == "h":
+        total_seconds = time_value * 3600
+    elif unit == "m":
+        total_seconds = time_value * 60
+
+    embed = nextcord.Embed(
+        title="🎉 Giveaway!",
+        description=(
+            f"**Prize:** {prize}\n"
+            "React with 🎉 to enter!\n"
+            f"React with {cancelgiveawayEmoji} to cancel the giveaway (authorized user only).\n"
+            f"Hosted by: {ctx.author.mention}"
+        ),
+        color=nextcord.Color.green()
+    )
+    embed.set_footer(text=f"Ends in {duration}")
+    giveaway_msg = await ctx.send(embed=embed)
+    await giveaway_msg.add_reaction("🎉")
+    emoji_obj = nextcord.utils.get(ctx.guild.emojis, id=1403999126835695687)
+    if emoji_obj:
+        await giveaway_msg.add_reaction(emoji_obj)
+    else:
+        await giveaway_msg.add_reaction(cancelgiveawayEmoji)
+    def check(reaction, user):
+        return (
+            reaction.message.id == giveaway_msg.id and
+            str(reaction.emoji) in ["🎉", cancelgiveawayEmoji] and
+            user != bot.user
+        )
+    giveaway_ended = False
+    try:
+        while not giveaway_ended:
+            reaction, user = await bot.wait_for("reaction_add", timeout=total_seconds, check=check)
+
+            if str(reaction.emoji) == cancelgiveawayEmoji:
+                if user.id == ownerId:
+                    await ctx.send(f"❌ Giveaway cancelled by {user.mention}.")
+                    giveaway_ended = True
+                    break
+                else:
+                    await ctx.send(f"❌ {user.mention}, you are not authorized to cancel this giveaway.")
+    except asyncio.TimeoutError:
+        giveaway_ended = True
+
+    if giveaway_ended and str(reaction.emoji) == cancelgiveawayEmoji:
+        return
+    fetched_msg = await ctx.channel.fetch_message(giveaway_msg.id)
+    reaction = nextcord.utils.get(fetched_msg.reactions, emoji="🎉")
+    if not reaction:
+        await ctx.send("❌ No entries received.")
+        return
+    users = await reaction.users().flatten()
+    users = [user for user in users if not user.bot]
+    if not users:
+        await ctx.send("❌ No valid (non-bot) entries.")
+        return
+    winner = random.choice(users)
+    await ctx.send(f"🎉 Congrats {winner.mention}! You won **{prize}**!")
 
 
 bot.run(botToken)
