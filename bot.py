@@ -184,11 +184,10 @@ async def giveaway(ctx, duration: str = None, *, prize: str = None):
             f"**Prize:** {prize}\n"
             "React with 🎉 to enter!\n"
             f"React with {cancelgiveawayEmoji} to cancel the giveaway (Json Only Feature).\n"
-            f"Hosted by: {ctx.author.mention}"
+            f"Hosted by: {ctx.author.mention} ends @ {nextcord.utils.format_dt(nextcord.utils.utcnow() + timedelta(seconds=total_seconds))}"
         ),
         color=nextcord.Color.green()
     )
-    embed.set_footer(text=f"Ends {nextcord.utils.format_dt(nextcord.utils.utcnow() + timedelta(seconds=total_seconds))}")
     giveaway_msg = await ctx.send(embed=embed)
     await giveaway_msg.add_reaction("🎉")
     emoji_obj = nextcord.utils.get(ctx.guild.emojis, id=1403999126835695687)
