@@ -61,7 +61,7 @@ async def question_of_the_day():
     now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
     pst_tz = pytz.timezone('America/Los_Angeles')
     now_pst = now_utc.astimezone(pst_tz)
-    if now_pst.hour == 0 and now_pst.minute == 34:
+    if now_pst.hour == 6 and now_pst.minute == 00:
         cursor = db.cursor(dictionary=True)
         cursor.execute("SELECT * FROM questions WHERE is_used = 0 ORDER BY RAND() LIMIT 1;")
         question_row = cursor.fetchone()
@@ -69,15 +69,20 @@ async def question_of_the_day():
             question_text = question_row['question']
             channel = bot.get_channel(DISCORD_CHANNEL_ID)
             if channel:
-                await channel.send(f"📌 **Question of the Day:**\n{question_text}")
+                await channel.send(f"**Question of the Day:**\n{question_text}")
                 update_query = "UPDATE questions SET is_used = 1 WHERE question = %s;"
                 cursor.execute(update_query, (question_text,))
                 db.commit()
         cursor.close()
-
-    else:
-        await log_channel.send('testing loops for now')
         
+@tasks.loop(hours=1)
+async def keep_db_connection_alive():
+    log_channel = bot.get_channel(1406547342135525447)
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM questions WHERE id = 'af273bda-7b34-11f0-83ef-d05099d889b3'")
+    question_row = cursor.fetchone()
+    await log_channel.send(f'This is a task on a 1 hour loop to keep the bot connection alive. Thanks! \n\n`{question_row['question']}`')
+    cursor.close()
     
 
 """
@@ -93,6 +98,10 @@ async def on_ready():
     else:
         await log_channel.send(f'Starting QOTD loop.')
         question_of_the_day.start()
+        time.sleep(1)
+        await log_channel.send(f'Now starting task to keep DB connection alive.')
+        keep_db_connection_alive.start()
+        time.sleep(1)
         await log_channel.send(f'Logged in as {bot.user.name}. I am ready to go <@639904427624628224>!')
 
 '''
