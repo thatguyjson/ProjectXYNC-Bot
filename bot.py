@@ -53,6 +53,33 @@ db = mysql.connector.connect(
     port=DBport
 )
 
+DISCORD_CHANNEL_ID = 1402540266757558273
+
+@tasks.loop(seconds=30)
+async def question_of_the_day():
+    log_channel = bot.get_channel(1402518002552803378)
+    now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
+    pst_tz = pytz.timezone('America/Los_Angeles')
+    now_pst = now_utc.astimezone(pst_tz)
+    if now_pst.hour == 6 and now_pst.minute == 0:
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM questions WHERE is_used = 0 ORDER BY RAND() LIMIT 1;")
+        question_row = cursor.fetchone()
+        if question_row:
+            question_text = question_row['question']
+            channel = bot.get_channel(DISCORD_CHANNEL_ID)
+            if channel:
+                await channel.send(f"📌 **Question of the Day:**\n{question_text}")
+                update_query = "UPDATE questions SET is_used = 1 WHERE question = %s;"
+                cursor.execute(update_query, (question_text,))
+                db.commit()
+        cursor.close()
+
+    else:
+        await log_channel.send('testing loops for now')
+        
+    
+
 """
 down below is on_ready + bot.run
 """
