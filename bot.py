@@ -81,7 +81,8 @@ async def keep_db_connection_alive():
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM questions WHERE id = 'af273bda-7b34-11f0-83ef-d05099d889b3'")
     question_row = cursor.fetchone()
-    await log_channel.send(f'This is a task on a 1 hour loop to keep the bot connection alive. Thanks! \n\n`{question_row['question']}`')
+    question_text = question_row['question']
+    await log_channel.send(f'This is a task on a 1 hour loop to keep the bot connection alive. Thanks! \n\n`{question_text}`')
     cursor.close()
     
 
