@@ -92,7 +92,7 @@ async def on_ready():
         await log_channel.send("Could not find the welcome channel.")
     else:
         await log_channel.send(f'Starting QOTD loop.')
-        await question_of_the_day.start()
+        question_of_the_day.start()
         await log_channel.send(f'Logged in as {bot.user.name}. I am ready to go <@639904427624628224>!')
 
 '''
