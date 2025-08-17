@@ -61,7 +61,7 @@ async def question_of_the_day():
     now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
     pst_tz = pytz.timezone('America/Los_Angeles')
     now_pst = now_utc.astimezone(pst_tz)
-    if now_pst.hour == 12 and now_pst.minute == 32:
+    if now_pst.hour == 0 and now_pst.minute == 34:
         cursor = db.cursor(dictionary=True)
         cursor.execute("SELECT * FROM questions WHERE is_used = 0 ORDER BY RAND() LIMIT 1;")
         question_row = cursor.fetchone()
