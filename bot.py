@@ -55,7 +55,7 @@ db = mysql.connector.connect(
 
 DISCORD_CHANNEL_ID = 1402540266757558273
 
-@tasks.loop(seconds=30)
+@tasks.loop(seconds=60)
 async def question_of_the_day():
     log_channel = bot.get_channel(1402518002552803378)
     now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
