@@ -69,7 +69,13 @@ async def question_of_the_day():
             question_text = question_row['question']
             channel = bot.get_channel(DISCORD_CHANNEL_ID)
             if channel:
-                await channel.send(f"||@everyone||\n # **Question of the Day:**\n\n `{question_text}`")
+await channel.send(
+    f"""||@everyone||
+✨ **__Question of the Day!__** ✨
+
+> 💭 **{question_text}**
+"""
+)
                 update_query = "UPDATE questions SET is_used = 1 WHERE question = %s;"
                 cursor.execute(update_query, (question_text,))
                 db.commit()
